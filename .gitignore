@@ -1,0 +1,13 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# Data
+data/raw/*
+data/processed/*
+!data/.gitkeep
+
+# MLflow
+mlruns/
+.mlflow-props

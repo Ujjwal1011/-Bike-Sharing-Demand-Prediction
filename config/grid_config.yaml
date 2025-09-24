@@ -1,0 +1,16 @@
+experiment_name: "cifar_image_classification"
+
+dataset:
+  name: "cifar10"
+  data_dir: "./data"
+
+models:
+  - name: "simple_cnn"
+  - name: "resnet18"
+
+grid:
+  learning_rate: [0.001, 0.0005]
+  batch_size: [64, 128]
+  epochs: [10]            # increase for better results
+  optimizer: ["adam", "sgd"]
+  weight_decay: [0.0, 1e-4]
