@@ -9,6 +9,10 @@ on:
 jobs:
   train-and-register:
     runs-on: ubuntu-latest
+    env:
+      MLFLOW_TRACKING_URI: https://dagshub.com/Ujjwal1011/-Bike-Sharing-Demand-Prediction.mlflow
+      MLFLOW_TRACKING_USERNAME: Ujjwal1011
+      MLFLOW_TRACKING_PASSWORD: ${{ secrets.DAGSHUB_TOKEN }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4 # Also a good practice to update this to v4
@@ -22,7 +26,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          
+
       # --- NEW DEBUGGING STEP ---
       - name: Verify DagsHub Token is Set
         env:
