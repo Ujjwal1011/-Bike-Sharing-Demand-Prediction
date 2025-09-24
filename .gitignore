@@ -11,3 +11,5 @@ data/processed/*
 # MLflow
 mlruns/
 .mlflow-props
+
+.env  # <-- ADD THIS LINE

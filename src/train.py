@@ -8,6 +8,10 @@ from config import MODEL_CONFIG
 from mlflow.models.signature import infer_signature
 # import dagshub
 
+from dotenv import load_dotenv  # <-- 1. IMPORT
+
+load_dotenv()  # <-- 2. LOAD THE .env FILE
+
 def train_models():
     """
     Trains multiple models using a parent-child run structure in MLflow.

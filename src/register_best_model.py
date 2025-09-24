@@ -1,6 +1,10 @@
 import mlflow
 # import dagshub
 
+from dotenv import load_dotenv  # <-- 1. IMPORT
+
+load_dotenv()  # <-- 2. LOAD THE .env FILE
+
 def register_best_model():
     """
     Finds the best PARENT run from an experiment and registers its model.
