@@ -16,7 +16,7 @@ def train_models():
     """
 
     dagshub.init(repo_owner='Ujjwal1011', repo_name='-Bike-Sharing-Demand-Prediction', mlflow=True)
-    mlflow.set_tracking_uri("https://dagshub.com/Ujjwal1011/-Bike-Sharing-Demand-Prediction.mlflow")
+    # mlflow.set_tracking_uri("https://dagshub.com/Ujjwal1011/-Bike-Sharing-Demand-Prediction.mlflow")
 
     # Load processed data
     train_df = pd.read_csv("data/processed/train.csv")
