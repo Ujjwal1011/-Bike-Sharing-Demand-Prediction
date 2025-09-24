@@ -1,12 +1,12 @@
 import mlflow
-import dagshub
+# import dagshub
 
 def register_best_model():
     """
     Finds the best PARENT run from an experiment and registers its model.
     """
     # Use your DagsHub username and repo name
-    dagshub.init(repo_owner='Ujjwal1011', repo_name='-Bike-Sharing-Demand-Prediction', mlflow=True)
+    # dagshub.init(repo_owner='Ujjwal1011', repo_name='-Bike-Sharing-Demand-Prediction', mlflow=True)
     
     MODEL_REGISTRY_NAME = "BikeSharingPredictor"
 
