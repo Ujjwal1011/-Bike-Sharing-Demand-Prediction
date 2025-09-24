@@ -1,36 +1,47 @@
 import mlflow
+import dagshub
 
 def register_best_model():
     """
     Finds the best PARENT run from an experiment and registers its model.
     """
-    EXPERIMENT_NAME = "Bike Sharing Demand Prediction"
+    # Use your DagsHub username and repo name
+    dagshub.init(repo_owner='Ujjwal1011', repo_name='-Bike-Sharing-Demand-Prediction', mlflow=True)
+    
     MODEL_REGISTRY_NAME = "BikeSharingPredictor"
 
     client = mlflow.tracking.MlflowClient()
     
+    # Use the experiment name logged by the training script
+    experiment_name = "Bike Sharing Demand Prediction"
+    
     try:
-        experiment_id = client.get_experiment_by_name(EXPERIMENT_NAME).experiment_id
+        experiment_id = client.get_experiment_by_name(experiment_name).experiment_id
     except AttributeError:
-        print(f"Experiment '{EXPERIMENT_NAME}' not found.")
+        print(f"Experiment '{experiment_name}' not found.")
         return
 
-    # Search only for parent runs (child runs have a 'mlflow.parentRunId' tag)
-    # We want runs that DO NOT have this tag.
-    query = "tags.'mlflow.parentRunId' IS NULL"
+    # --- THIS IS THE FIX ---
+    # Search for runs where the name starts with "Parent_"
+    query = "tags.'mlflow.runName' LIKE 'Parent_%'"
     
     # Search for the best parent run based on the test set RMSE
-    best_run = client.search_runs(
+    runs = client.search_runs(
         experiment_ids=[experiment_id],
         filter_string=query,
         order_by=["metrics.test_rmse ASC"],
         max_results=1
-    )[0]
+    )
+
+    if not runs:
+        print("No parent runs found. Make sure the training script has completed successfully.")
+        return
+
+    best_run = runs[0]
 
     best_run_id = best_run.info.run_id
     best_rmse = best_run.data.metrics["test_rmse"]
     
-    # The artifact path is now the model name itself (e.g., 'RandomForest')
     model_name_from_run = best_run.data.tags['mlflow.runName'].replace('Parent_', '')
     model_uri = f"runs:/{best_run_id}/{model_name_from_run}"
 

@@ -6,6 +6,7 @@ from sklearn.model_selection import ParameterGrid, cross_val_score
 from sklearn.metrics import mean_squared_error, r2_score
 from config import MODEL_CONFIG
 from mlflow.models.signature import infer_signature
+import dagshub
 
 def train_models():
     """
@@ -13,6 +14,10 @@ def train_models():
     Each model type has a parent run for tuning.
     Each hyperparameter combination is a nested child run.
     """
+
+    dagshub.init(repo_owner='Ujjwal1011', repo_name='-Bike-Sharing-Demand-Prediction', mlflow=True)
+    mlflow.set_tracking_uri("https://dagshub.com/Ujjwal1011/-Bike-Sharing-Demand-Prediction.mlflow")
+
     # Load processed data
     train_df = pd.read_csv("data/processed/train.csv")
     test_df = pd.read_csv("data/processed/test.csv")
