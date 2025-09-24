@@ -4,30 +4,42 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch:
+  workflow_dispatch: # Allows manual triggering
 
 jobs:
   train-and-register:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4 # Also a good practice to update this to v4
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v5 # And this to v5
         with:
           python-version: '3.9'
-
-      # --- THIS IS THE NEW PART ---
-      # This explicitly sets the token for dagshub.init() to find
-      - name: Set DagsHub Token
-        run: echo "DAGSHUB_TOKEN=${{ secrets.DAGSHUB_TOKEN }}" >> $GITHUB_ENV
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          
+      # --- NEW DEBUGGING STEP ---
+      - name: Verify DagsHub Token is Set
+        env:
+          # Temporarily map the secret to an env var for this step
+          TEST_TOKEN: ${{ secrets.DAGSHUB_TOKEN }}
+        run: |
+          echo "Verifying the token..."
+          if [ -z "$TEST_TOKEN" ]; then
+            echo "DAGSHUB_TOKEN secret is NOT set or is empty."
+            exit 1
+          else
+            echo "DAGSHUB_TOKEN secret is set."
+            # The following line is safe, it only prints the first 4 chars
+            echo "Token starts with: ${TEST_TOKEN:0:4}"
+          fi
 
+      # --- THIS IS THE NEW STEP THAT FIXES THE ERROR ---
       - name: Run Data Ingestion Script
         run: python scripts/get_data.py
 
@@ -39,3 +51,9 @@ jobs:
 
       - name: Register Best Model
         run: python src/register_best_model.py
+      
+      - name: Upload MLflow artifacts
+        uses: actions/upload-artifact@v4 # <-- THE FIX IS HERE
+        with:
+          name: mlflow-artifacts
+          path: ./mlruns
